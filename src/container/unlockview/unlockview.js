@@ -30,24 +30,46 @@ export default class unlockview extends Component {
             notes:"Click to open the lock",
             status:"locked",
             cycle:30,
-            interval:0
+            interval:0,
+            hide:"none",
+            lockbutton:null
         }
+    }
+    hide(){
+        this.setState({hide:"none"});
+    }
+    show(){
+        this.setState({locked:true,status:"locked",notes:"Click to open the lock."});
+        this.setState({hide:"block"});
     }
     update_size(width,height){
         this.setState({height:height,width:width,title_height:height*0.3,button_height:height*0.5,note_height:height*0.2});
 
     }
     update_username(username){
-        this.setState({username:username})
+        this.setState({userid:username});
     }
     update_url(url){
         this.setState({url:url});
     }
+    update_statcode(statcode){
+        this.setState({statcode:statcode});
+    }
+    update_lock_name(lock_name){
+        this.setState({lock_name:lock_name});
+    }
+    update_lockbutton(lockfunc){
+        this.setState({lockbutton:lockfunc});
+    }
 
     handleerror (){
+
+        this.state.lockbutton(false);
         this.setState({locked:true,status:"locked",notes:"Communication error, try again or ask for support."});
     }
     handlecommunicateStart(){
+
+        this.state.lockbutton(true);
         this.setState({locked:true,status:"communicating",notes:"Communicating with Server"});
     }
     handlecommunicating(){
@@ -58,18 +80,28 @@ export default class unlockview extends Component {
         this.setState({cycle:this.state.cycle-1});
     }
     handletimeout (){
+        this.state.lockbutton(false);
         this.setState({locked:true,status:"locked",notes:"Server time out, try again or contract the support"});
         this.setState({cycle:30});
 
     }
     handleunlock(){
+        this.state.lockbutton(false);
         this.setState({locked:false,status:"open",notes:"The lock is opened."});
     }
     handlecircle(){
+        //console.log("cycleing");
         let jsonParse = function(res) {
             return res.json().then(jsonResult => ({ res, jsonResult }));
         }
         if(this.state.locked == true && this.state.status == "communicating" && this.state.cycle >0){
+            let body = {statcode:this.state.statcode};
+            let map={
+                action:"HCU_Lock_Status",
+                type:"query",
+                body: body,
+                user:this.state.userid
+            };
             fetch(this.state.url,
                 {
                     method:'POST',
@@ -77,11 +109,11 @@ export default class unlockview extends Component {
                         'Accept': 'application/json',
                         'Content-Type': 'application/json'
                     },
-                    body:JSON.stringify({'action':'HCU_Lock_Status','id':this.state.userid,'statcode':this.state.statcode})
+                    body:JSON.stringify(map)
                 }).then(jsonParse)
                 .then((res)=>{
                     if(res.jsonResult.status == "true"){
-                        if(res.jsonResult.lock == "false" ){
+                        if(res.jsonResult.ret == "false" ){
                             this.handleunlock();
                             clearInterval(this.state.interval);
                         }else{
@@ -105,12 +137,12 @@ export default class unlockview extends Component {
         }
     }
     handleresult(res) {
-        console.log(res.jsonResult.status);
+        //console.log(res.jsonResult.status);
         if(res.jsonResult.status == "true"){
-            console.log("try to start the Interval");
+            //console.log("try to start the Interval");
             this.handlecommunicateStart();
             let temp = setInterval(this.handlecircle.bind(this),2000);
-            console.log("Interval=" +temp);
+            //console.log("Interval=" +temp);
             this.setState({interval: temp});
         }else{
             console.log('result error', error);
@@ -129,6 +161,13 @@ export default class unlockview extends Component {
 
 
         if(this.state.locked == true && this.state.status =="locked"){
+            let body = {statcode:this.state.statcode};
+            let map={
+                action:"HCU_Lock_open",
+                type:"mod",
+                body: body,
+                user:this.state.userid
+            };
             fetch(this.state.url,
                 {
                     method:'POST',
@@ -136,7 +175,7 @@ export default class unlockview extends Component {
                         'Accept': 'application/json',
                         'Content-Type': 'application/json'
                     },
-                    body:JSON.stringify({'action':'HCU_Lock_open','id':this.state.userid,'statcode':this.state.statcode})
+                    body:JSON.stringify(map)
                 }).then(jsonParse)
                 .then(this.handleresult.bind(this))
                 .catch( (error) => {
@@ -152,13 +191,12 @@ export default class unlockview extends Component {
 
 
 
-
     render() {
         let pad_value = this.state.height/50+"px "+this.state.height*0.1+"px";
         let button = <i className="fa fa-lock" style={{padding:pad_value }}></i>;
         if(this.state.locked == false) button = <i className="fa fa-unlock-alt" style={{padding:pad_value }}></i>;
         return (
-            <div style={{position:"relative",background:"#62b900",height:this.state.height,width:'100%'}}>
+            <div style={{position:"relative",background:"#62b900",height:this.state.height,width:'100%',display:this.state.hide}}>
                 <div style={{position:"relative",width:'100%',height:this.state.title_height,textAlign : 'center',display:"table"}}>
                     <div className="unlocklabel" style={{position:"relative",width:"100%",height:this.state.title_height ,float:"left",fontSize:this.state.height/8,display:"table-cell",verticalAlign:"middle",margin:"auto"}} >{this.state.lock_name}
                     </div>
