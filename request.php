@@ -48,13 +48,45 @@ switch ($key){
             'userid'=>'123123123'
         );
         $retval=array(
-            'status'=>'true',
+            'status'=>'false',
             'auth'=>'true',
             'ret'=>$user
         );
 
         $jsonencode = _encode($retval);
         echo $jsonencode; break;
+    case "HCU_Wechat_Bonding": //Use Wechat to login the Server, response is the userID in system.
+    /*
+         var body = {code : code,
+                        username:username,
+                        password:password};
+         var map={
+         action:"HCU_Wechat_Bonding",
+         type:"query",
+         body: body,
+         user:"null"
+         };
+        * */
+            $body=$payload["body"];
+            $code = $body['code'];
+            $openid = "12312312312312312312";
+            if(!isset($openid)&&empty($openid)){ $openid="Not Autherized";}
+            $user=array(
+                'username'=> 'Liuzehong',
+                'userid'=>'123123123'
+            );
+            $x=rand(1,3);
+            $sta = 'false';
+            if($x==2) $sta='true';
+            $retval=array(
+                'status'=>$sta,
+                'auth'=>'true',
+                'ret'=>$user,
+                'msg'=>'12345'
+            );
+
+            $jsonencode = _encode($retval);
+            echo $jsonencode; break;
     case "HCU_Lock_Query": //Query How many lock is autherized to user,response is a list of StatCode and Name and Location and so on
     /*
         var listreq = {

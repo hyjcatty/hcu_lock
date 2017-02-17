@@ -12,6 +12,7 @@ import Foot from "../foot/foot"
 import Head from "../head/head"
 import Unlockview from "../container/unlockview/unlockview"
 import Listview from "../container/listview/listview"
+import Loginview from "../container/loginview/loginview"
 import './App.css';
 
 import fetch from 'isomorphic-fetch';
@@ -32,7 +33,7 @@ class App extends Component{
             headfootminheight: 50,
             canvasheight: 700,
             userid: "user",
-            username:"username",
+            username:"未登录用户",
             hculist: []
         };
     }
@@ -46,9 +47,14 @@ class App extends Component{
         this.refs.foot.update_size(headfootheight);
         this.refs.Unlockview.update_size(width,canvasheight);
         this.refs.Listview.update_size(width,canvasheight);
+        this.refs.Loginview.update_size(width,canvasheight);
     }
     initializeUrl(url){
         this.refs.Unlockview.update_url(url);
+    }
+    initializeLogin(id,callback){
+        this.refs.Loginview.update_wechatid(id);
+        this.refs.Loginview.update_callback(callback);
     }
     initializeList(list){
         this.refs.Listview.update_locklist(list);
@@ -65,7 +71,14 @@ class App extends Component{
     buttonlock(input){
         this.refs.foot.disable(input);
     }
+    loginview(){
+        this.refs.Loginview.show();
+        this.refs.Listview.hide();
+        this.refs.Unlockview.hide();
+        this.refs.foot.hide();
+    }
     listview(){
+        this.refs.Loginview.hide();
         this.refs.Listview.show();
         this.refs.Unlockview.hide();
         this.refs.foot.hide();
@@ -76,6 +89,7 @@ class App extends Component{
         this.refs.Listview.hide();
         this.refs.Unlockview.show();
         this.refs.foot.show();
+        this.refs.Loginview.hide();
     }
     setuser(username,userid){
         this.setState({userid:userid,username:username});
@@ -94,6 +108,7 @@ class App extends Component{
             <div>
                 <Unlockview ref="Unlockview"/>
                 <Listview ref="Listview"/>
+                <Loginview ref="Loginview"/>
             </div>
             <div>
                 <Foot ref="foot"/>
@@ -180,6 +195,8 @@ function getRelativeURL(){
 }
 function wechat_callback(res){
     if(res.jsonResult.status == "false"){
+        app_handle.initializeLogin(wechat_id,wechatbonding);
+        app_handle.loginview();
         return;
     }
     if(res.jsonResult.auth == "false"){
@@ -187,6 +204,19 @@ function wechat_callback(res){
     }
     let userinfo = res.jsonResult.ret;
     app_handle.setuser(userinfo.username,userinfo.userid);
+    fetchlist();
+}
+function wechat_bonding_callback(res){
+    if(res.jsonResult.status == "false"){
+        alert("校验出错"+res.jsonResult.msg);
+        return;
+    }
+    if(res.jsonResult.auth == "false"){
+        return;
+    }
+    let userinfo = res.jsonResult.ret;
+    app_handle.setuser(userinfo.username,userinfo.userid);
+    fetchlist();
 }
 function query_callback(res){
     if(res.jsonResult.status == "false"){
@@ -207,8 +237,8 @@ function query_callback(res){
         }
         buildlocklist.push(map);
     }
-
     app_handle.initializeList(buildlocklist);
+    app_handle.listview();
 }
 function jsonParse(res) {
     return res.json().then(jsonResult => ({ res, jsonResult }));
@@ -255,11 +285,39 @@ function wechatinitialize(code){
         body:JSON.stringify(map)
     }).then(jsonParse)
     .then(wechat_callback)
-    .then(fetchlist)
+    //.then(fetchlist)
     .catch( (error) => {
         console.log('request error', error);
         return { error };
     });
+}
+function wechatbonding(code,username,password){
+
+    var body = {code : code,
+    username:username,
+    password:password};
+    var map={
+        action:"HCU_Wechat_Bonding",
+        type:"query",
+        body: body,
+        user:"null"
+    };
+
+    fetch(request_head,
+        {
+            method:'POST',
+            headers:{
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body:JSON.stringify(map)
+        }).then(jsonParse)
+        .then(wechat_bonding_callback)
+        //.then(fetchlist)
+        .catch( (error) => {
+            console.log('request error', error);
+            return { error };
+        });
 }
 function getWechatScope(){
     var url = document.location.toString();
