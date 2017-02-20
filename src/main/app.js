@@ -195,6 +195,7 @@ function getRelativeURL(){
 }
 function wechat_callback(res){
     if(res.jsonResult.status == "false"){
+        wechat_id=res.jsonResult.ret.wechatid;
         app_handle.initializeLogin(wechat_id,wechatbonding);
         app_handle.loginview();
         return;

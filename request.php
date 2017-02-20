@@ -45,7 +45,8 @@ switch ($key){
         if(!isset($openid)&&empty($openid)){ $openid="Not Autherized";}
         $user=array(
             'username'=> 'Liuzehong',
-            'userid'=>'123123123'
+            'userid'=>'123123123',
+            'wechatid'=>'123456'
         );
         $retval=array(
             'status'=>'false',
