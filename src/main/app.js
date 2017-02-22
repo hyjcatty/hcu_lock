@@ -196,6 +196,15 @@ function getRelativeURL(){
 function wechat_callback(res){
     if(res.jsonResult.status == "false"){
         wechat_id=res.jsonResult.ret.wechatid;
+
+        if(wechat_id === "fail"){
+
+            let buildlocklist = [];
+            app_handle.initializeList(buildlocklist);
+            app_handle.listview();
+            alert("微信登陆失败，请再次尝试登陆！");
+            return;
+        }
         app_handle.initializeLogin(wechat_id,wechatbonding);
         app_handle.loginview();
         return;
