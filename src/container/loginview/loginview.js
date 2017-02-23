@@ -69,12 +69,12 @@ export default class unlockview extends Component {
                             </div>
                             <div className="panel-body">
                                 <div className="input-group">
-                                    <span className="input-group-addon" id="Username" style={{minWidth: "100px"}}>用户名</span>
+                                    <span className="input-group-addon" id="Username" style={{minWidth: "50px"}}>用户名</span>
                                     <input type="text" className="form-control" placeholder="用户名" aria-describedby="basic-addon1" id="Username_Input"/>
                                 </div>
                                 <p></p>
                                 <div className="input-group">
-                                    <span className="input-group-addon" id="Password" style={{minWidth: "100px"}}>密码</span>
+                                    <span className="input-group-addon" id="Password" style={{minWidth: "50px"}}>密码</span>
                                     <input type="password" className="form-control" placeholder="密码" aria-describedby="basic-addon1" id="Password_Input"/>
                                 </div>
                                 <p></p>

@@ -22,7 +22,7 @@ export default class foot extends Component {
         super(props);
         this.state={
             height:50,
-            content:"Designed by HYJ",
+            content:"©上海阜华",
             hide:"none",
             callback:null,
             disabled:""
@@ -60,7 +60,7 @@ export default class foot extends Component {
                 <button  type="button" className="btn btn-warning btn-sm pull-left" style={{marginLeft:"5px",marginTop:"5px",height:(this.state.height-10),width:(this.state.height-10),display:this.state.hide}} disabled={this.state.disabled} onClick={this.handle_click.bind(this)}>back</button>
 
                 <a style={{position:"relative",height:this.state.height,display:'table-cell',verticalAlign:'middle'}}>
-                    < span className="headlabel pull-right" style={{fontSize:this.state.height*0.4,marginRight:this.state.height*0.3}}>{this.state.content}</span>
+                    < span className="headlabel pull-right" style={{fontSize:this.state.height*0.3,marginRight:this.state.height*0.3}}>{this.state.content}</span>
                 </a>
             </div>
         );
