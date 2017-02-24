@@ -16,8 +16,8 @@ var clean = require('gulp-clean');
 var htmlmin = require('gulp-htmlmin');
 var option = {
 
-    //buildPath: "../www/lock"
-    buildPath: "./dist"
+    buildPath: "../www/lock"
+    //buildPath: "./dist"
 }
 var option_html = {
     collapseWhitespace:true,
@@ -65,6 +65,8 @@ gulp.task("resourcecopy",function(){
 
     gulp.src("./build/resource/**/*")
         .pipe(gulp.dest(option.buildPath+"/resource/"));
+    gulp.src("./resource/image/*")
+        .pipe(gulp.dest(option.buildPath+"/resource/image/"));
     /*
     gulp.src("./*.html")
        .pipe(gulp.dest(option.buildPath+"/"));*/
