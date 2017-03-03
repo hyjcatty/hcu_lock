@@ -13,6 +13,7 @@ import Head from "../head/head"
 import Unlockview from "../container/unlockview/unlockview"
 import Listview from "../container/listview/listview"
 import Loginview from "../container/loginview/loginview"
+import Mapview from "../container/mapview/mapview"
 import './App.css';
 
 import fetch from 'isomorphic-fetch';
@@ -48,6 +49,7 @@ class App extends Component{
         this.refs.Unlockview.update_size(width,canvasheight);
         this.refs.Listview.update_size(width,canvasheight);
         this.refs.Loginview.update_size(width,canvasheight);
+        this.refs.Mapview.update_size(width,canvasheight);
     }
     initializeUrl(url){
         this.refs.Unlockview.update_url(url);
@@ -76,12 +78,14 @@ class App extends Component{
         this.refs.Listview.hide();
         this.refs.Unlockview.hide();
         this.refs.foot.hide();
+        this.refs.Mapview.hide();
     }
     listview(){
         this.refs.Loginview.hide();
         this.refs.Listview.show();
         this.refs.Unlockview.hide();
         this.refs.foot.hide();
+        this.refs.Mapview.hide();
     }
     lockview(input){
         this.refs.Unlockview.update_statcode(input.statcode);
@@ -90,6 +94,16 @@ class App extends Component{
         this.refs.Unlockview.show();
         this.refs.foot.show();
         this.refs.Loginview.hide();
+        this.refs.Mapview.hide();
+    }
+    mapview(input){
+        this.refs.Listview.hide();
+        this.refs.Unlockview.hide();
+        this.refs.foot.show();
+        this.refs.Loginview.hide();
+        this.refs.Mapview.show();
+        //console.log(input.Latitude+"//"+input.Longitude);
+        this.refs.Mapview.getLocation(input.Latitude,input.Longitude,input.lockname);
     }
     setuser(username,userid){
         this.setState({userid:userid,username:username});
@@ -109,6 +123,7 @@ class App extends Component{
                 <Unlockview ref="Unlockview"/>
                 <Listview ref="Listview"/>
                 <Loginview ref="Loginview"/>
+                <Mapview ref="Mapview"/>
             </div>
             <div>
                 <Foot ref="foot"/>
@@ -121,6 +136,9 @@ class App extends Component{
 }
 var callback = function(input){
     app_handle.lockview(input);
+}
+var callback2 = function(input){
+    app_handle.mapview(input);
 }
 var footcallback= function(){
     app_handle.listview();
@@ -243,7 +261,10 @@ function query_callback(res){
             lockdetail:getlocklist[i].lockdetail,
             lockname:getlocklist[i].lockname,
             statcode:getlocklist[i].statcode,
-            callback:callback
+            Latitude:getlocklist[i].latitude,
+            Longitude:getlocklist[i].longitude,
+            callback:callback,
+            callback2:callback2
         }
         buildlocklist.push(map);
     }

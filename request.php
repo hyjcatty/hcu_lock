@@ -49,7 +49,7 @@ switch ($key){
             'wechatid'=>'123456'
         );
         $retval=array(
-            'status'=>'false',
+            'status'=>'true',
             'auth'=>'true',
             'ret'=>$user
         );
@@ -102,8 +102,8 @@ switch ($key){
                 'statcode'=>'12312'.(string)$i,
                 'lockname'=>'Lock['.(string)$i.']',
                 'lockdetail'=>'xxxxx'.(string)$i.'sssss',
-                'longitude'=>(string)$i,
-                'latitude'=>(string)$i
+                'latitude'=>"31.313004",
+                'longitude'=>"121.525701"
             );
             array_push($retlist,$map);
         }
