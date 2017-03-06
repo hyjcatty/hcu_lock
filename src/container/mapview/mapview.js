@@ -116,14 +116,26 @@ export default class mapview extends Component {
                 console.log("无法获得当前位置！");
                 alert("无法获得当前位置！");
              }*/
+            var TO_BLNG = function(lng){return lng+0.0065;};
 
+            var TO_BLAT = function(lat){return lat+0.0060;};
+
+            var TO_GLNG = function(lng){return lng-0.0065;};
+
+            var TO_GLAT = function(lat){return lat-0.0060;};
             let bmap = new BMap.Map("GuildMap");
             var t_point = new BMap.Point(parseFloat(this.state.Longitude),parseFloat(this.state.Latitude));
             bmap.centerAndZoom(t_point,15);
+            //var geoc = new BMap.Geocoder();
+            //var geolocation = new BMap.Geolocation();
             let locationcallback = function(position){
                 let usrLatitude = position.coords.latitude;
                 let usrLongitude = position.coords.longitude;
-                var s_point = new BMap.Point(parseFloat(usrLongitude),parseFloat(usrLatitude));
+                alert("start Longitude,Latitude="+usrLatitude+","+usrLongitude);
+                //var s_point = new BMap.Point(parseFloat(usrLongitude),parseFloat(usrLatitude));
+                var s_point = new BMap.Point(TO_BLNG(usrLongitude),TO_BLAT(usrLatitude));
+            //let locationcallback = function(point){
+            //    var s_point = point;
                 var locations = [s_point,t_point];
                 var driving = new BMap.DrivingRoute(bmap, {
                     renderOptions:{
@@ -142,11 +154,32 @@ export default class mapview extends Component {
                     }
                 });
                 driving.search(locations[0], locations[1]);
-            };
+            };/*
+            geolocation.getCurrentPosition(function(r){
+                if(this.getStatus() == BMAP_STATUS_SUCCESS){
+                    locationcallback(r.point);
+                    //var mk = new BMap.Marker(r.point);
+                    //map.addOverlay(mk);
+                    //map.panTo(r.point);
+                    //$("#start_point").val(r.point.lng+','+r.point.lat);
+                    //alert("当前位置经度为:"+r.point.lng+"纬度为:"+r.point.lat);
+                }else {
+                    console.log("无法获得当前位置！");
+                    alert("无法获得当前位置！");
+                }
+            },{enableHighAccuracy: true});*/
+
             if (navigator.geolocation)
             {
+                let errorcallback = function(){
+                    console.log("无法获得当前位置！");
+                    alert("无法获得当前位置！");
+                };
+                navigator.geolocation.getCurrentPosition(locationcallback,errorcallback,{
+                    enableHighAccuracy: true,
+                    timeout: 5000,
 
-                navigator.geolocation.getCurrentPosition(locationcallback);
+                });
             }
             else{
                 console.log("无法获得当前位置！");
