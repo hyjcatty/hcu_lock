@@ -230,6 +230,7 @@ function wechat_callback(res){
     if(res.jsonResult.auth == "false"){
         return;
     }
+    wechat_id=res.jsonResult.ret.wechatid;
     let userinfo = res.jsonResult.ret;
     app_handle.setuser(userinfo.username,userinfo.userid);
     fetchlist();
@@ -275,9 +276,12 @@ function jsonParse(res) {
     return res.json().then(jsonResult => ({ res, jsonResult }));
 }
 function fetchlist(){
-
+    var body={
+        key:wechat_id
+    }
     var listreq = {
         action:"HCU_Lock_Query",
+        body:body,
         type:"query",
         user:app_handle.getuser()
     };
