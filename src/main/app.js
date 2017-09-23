@@ -326,11 +326,12 @@ function wechatinitialize(code){
         return { error };
     });
 }
-function wechatbonding(code,username,password){
+function wechatbonding(code,username,password,mobile){
 
     var body = {code : code,
     username:username,
-    password:b64_sha1(password)
+    password:b64_sha1(password),
+        mobile:mobile
     };
     var map={
         action:"HCU_Wechat_Bonding",

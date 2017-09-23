@@ -49,7 +49,7 @@ switch ($key){
             'wechatid'=>'123456'
         );
         $retval=array(
-            'status'=>'true',
+            'status'=>'false',
             'auth'=>'true',
             'ret'=>$user
         );

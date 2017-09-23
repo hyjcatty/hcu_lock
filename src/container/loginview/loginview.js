@@ -16,7 +16,7 @@ import './loginview.css';
 
 
 
-export default class unlockview extends Component {
+export default class loginview extends Component {
     constructor(props) {
         super(props);
         this.state={
@@ -48,6 +48,7 @@ export default class unlockview extends Component {
     handle_login(){
         let username=document.getElementById("Username_Input").value;
         let password=document.getElementById("Password_Input").value;
+        let mobile=document.getElementById("Mobile_Input").value;
         if (username === "") {
             document.getElementById("Username_Input").focus();
             return;
@@ -56,7 +57,11 @@ export default class unlockview extends Component {
             document.getElementById("Password_Input").focus();
             return;
         }
-        this.state.callback(this.state.wechatid,username,password);
+        if (mobile === "") {
+            document.getElementById("Mobile_Input").focus();
+            return;
+        }
+        this.state.callback(this.state.wechatid,username,password,mobile);
     }
     render() {
         return (
@@ -76,6 +81,11 @@ export default class unlockview extends Component {
                                 <div className="input-group">
                                     <span className="input-group-addon" id="Password" style={{minWidth: "50px"}}>密码</span>
                                     <input type="password" className="form-control" placeholder="密码" aria-describedby="basic-addon1" id="Password_Input"/>
+                                </div>
+                                <p></p>
+                                <div className="input-group">
+                                    <span className="input-group-addon" id="Username" style={{minWidth: "50px"}}>手机号</span>
+                                    <input type="text" className="form-control" placeholder="手机号" aria-describedby="basic-addon1" id="Mobile_Input"/>
                                 </div>
                                 <p></p>
                                 <button type="button" id="Login_Comfirm" data-loading-text="Loading..." className="btn btn-primary" autoComplete="off" style={{minWidth: "150px"}} onClick={this.handle_login.bind(this)} >
